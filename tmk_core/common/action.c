@@ -34,6 +34,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 
+unsigned int keypress_count = 0;
+
 void action_exec(keyevent_t event)
 {
     if (!IS_NOEVENT(event)) {
@@ -61,6 +63,9 @@ void process_action(keyrecord_t *record)
 #endif
 
     if (IS_NOEVENT(event)) { return; }
+
+    if (event.pressed)
+      keypress_count++;
 
     action_t action = layer_switch_get_action(event.key);
     dprint("ACTION: "); debug_action(action);

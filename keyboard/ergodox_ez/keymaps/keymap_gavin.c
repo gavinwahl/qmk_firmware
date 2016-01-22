@@ -1,6 +1,7 @@
 #include "ergodox_ez.h"
 #include "debug.h"
 #include "action_layer.h"
+#include "action.h"
 
 #define BASE 0 // default layer
 #define SYMB 1 // symbols
@@ -142,6 +143,7 @@ const uint16_t PROGMEM fn_actions[] = {
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
     static uint16_t start;
+    static unsigned int start_keypresses;
     switch(id) {
         case 0:
         if (record->event.pressed) {
@@ -153,9 +155,10 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
         case 1:
         if (record->event.pressed) {
             start = timer_read();
+            start_keypresses = keypress_count;
             return MACRO(D(LCTRL), END);
         } else {
-            if (timer_elapsed(start) > 150) {
+            if (start_keypresses != keypress_count || timer_elapsed(start) > 150) {
                 return MACRO(U(LCTRL), END);
             } else {
                 return MACRO(U(LCTRL), T(ESC), END);

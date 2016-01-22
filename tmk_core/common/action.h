@@ -74,6 +74,7 @@ bool is_tap_key(keypos_t key);
 void debug_event(keyevent_t event);
 void debug_record(keyrecord_t record);
 void debug_action(action_t action);
+extern unsigned int keypress_count;
 
 #ifdef __cplusplus
 }

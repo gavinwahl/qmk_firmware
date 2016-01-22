@@ -25,7 +25,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                                        | App  | LGui |       | Ins  |  Del |
  *                                 ,------|------|------|       |------+--------+------.
  *                                 |      |      | Home |       | PgUp |        |      |
- *                                 | Space|Backsp|------|       |------|  L1    |Enter |
+ *                                 | Space|Backsp|------|       |------|  Del   |Enter |
  *                                 |      |ace   | End  |       | PgDn |        |      |
  *                                 `--------------------'       `----------------------'
  */
@@ -49,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   MO(SYMB),  KC_DOWN,KC_LBRC,KC_RBRC,          KC_FN1,
              KC_INS,        KC_DELETE,
              KC_PGUP,
-             KC_PGDN, MO(SYMB), KC_ENT
+             KC_PGDN, KC_DELETE, KC_ENT
     ),
 /* Keymap 1: Symbol Layer
  *

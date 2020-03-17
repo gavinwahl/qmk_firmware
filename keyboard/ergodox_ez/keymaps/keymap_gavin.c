@@ -13,10 +13,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |   =    |   1  |   2  |   3  |   4  |   5  | LEFT |           | RIGHT|   6  |   7  |   8  |   9  |   0  |   -    |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * | Tab    |   Q  |   W  |   E  |   R  |   T  |  L1  |           |  L1  |   Y  |   U  |   I  |   O  |   P  |   \    |
- * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * | Tab    |   Q  |   W  |   E  |   R  |   T  |  L1  |           |latchd|   Y  |   U  |   I  |   O  |   P  |   \    |
+ * |--------+------+------+------+------+------|      |           | F17  |------+------+------+------+------+--------|
  * | Ctrl   |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |   ;  |   '    |
- * |--------+------+------+------+------+------| Hyper|           | Alt  |------+------+------+------+------+--------|
+ * |--------+------+------+------+------+------| Hyper|           | F17  |------+------+------+------+------+--------|
  * | LShift |   X  |   X  |   C  |   V  |   B  |      |           |      |   N  |   M  |   ,  |   .  |  /   | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
  *   |Grv/L1|  '"  |Alt   | Alt  | Alt  |                                       |  L1  | Alt  |   [  |   ]  | LOCK |
@@ -43,9 +43,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                KC_SPC,KC_BSPC,KC_END,
         // right hand
              KC_RGHT,     KC_6,   KC_7,   KC_8,   KC_9,   KC_0,             KC_MINS,
-             TG(2),       KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
+             M(3),       KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,             KC_BSLS,
                           KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,          KC_QUOT,
-             MO(2),    KC_N,   KC_M,   KC_COMM,KC_DOT, KC_SLSH,   KC_RSFT,
+             M(2),    KC_N,   KC_M,   KC_COMM,KC_DOT, KC_SLSH,   KC_RSFT,
                                   MO(SYMB),  KC_RALT,KC_LBRC,KC_RBRC,          ACTION_MODS_KEY(MOD_LGUI, KC_L),
              KC_INS,        KC_DELETE,
              KC_PGUP,
@@ -140,6 +140,8 @@ const uint16_t PROGMEM fn_actions[] = {
     [1] = ACTION_LAYER_TAP_TOGGLE(SYMB)                // FN1 - Momentary Layer 1 (Symbols)
 };
 
+static uint8_t f17_status = 0;
+
 const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
     static uint16_t start;
@@ -164,6 +166,25 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
             }
         }
         break;
+        case 2:
+        if (record->event.pressed) {
+          f17_status = 1;
+          register_code(KC_F17);
+        } else {
+          f17_status = 0;
+          unregister_code(KC_F17);
+        }
+        break;
+        case 3:
+        if (record->event.pressed) {
+          f17_status = !f17_status;
+          if (f17_status) {
+            register_code(KC_F17);
+          } else {
+            unregister_code(KC_F17);
+          }
+        }
+        break;
     }
     return MACRO_NONE;
 };
@@ -185,5 +206,8 @@ void * matrix_scan_user(void) {
     }
     if(layer_state & 4) {
       ergodox_right_led_2_on();
+    }
+    if(f17_status) {
+      ergodox_right_led_3_on();
     }
 };

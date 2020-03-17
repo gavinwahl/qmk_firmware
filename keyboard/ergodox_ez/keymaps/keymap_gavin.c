@@ -156,12 +156,11 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
         if (record->event.pressed) {
             start = timer_read();
             start_keypresses = keypress_count;
-            return MACRO(D(LCTRL), END);
+            register_code(KC_LCTRL);
         } else {
-            if (start_keypresses != keypress_count || timer_elapsed(start) > 150) {
-                return MACRO(U(LCTRL), END);
-            } else {
-                return MACRO(U(LCTRL), T(ESC), END);
+            unregister_code(KC_LCTRL);
+            if (start_keypresses == keypress_count && timer_elapsed(start) < 150) {
+                return MACRO(T(ESC), END);
             }
         }
         break;
